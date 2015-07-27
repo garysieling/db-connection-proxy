@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Data.Common;
+using com.garysieling.database;
 
 namespace Dapper
 {
@@ -189,7 +190,12 @@ namespace Dapper
                 cmd.CommandType = commandType.Value;
             if (paramReader != null)
             {
-                paramReader(cmd, parameters);
+                if (cmd is ProxyDbCommand)
+                {
+                    ((ProxyDbCommand)cmd).eachReader(paramReader, parameters);
+                } else {
+                    paramReader(cmd, parameters);
+                }
             }
             return cmd;
         }
